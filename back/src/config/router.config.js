@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
-import UserController from '../controllers/User.controller';
 import {
   checkIfCredentialsExist,
   encryptPassword,
 } from '../middleware/credentials.middleware';
+
 import { registerUser, loginUser } from '../controllers/Auth.controller';
+import UserController from '../controllers/User.controller';
+import { search } from '../controllers/Google.controller';
 
 const router = Router();
 const URL_CONSTANT = {
@@ -26,5 +28,8 @@ router.get(`/${URL_CONSTANT.USER}`, UserController.get);
 router.get(`/${URL_CONSTANT.USER}/:id`, UserController.getById);
 router.put(`/${URL_CONSTANT.USER}/:id`, UserController.updateById);
 router.delete(`/${URL_CONSTANT.USER}/:id`, UserController.deleteById);
+
+// Book
+router.get(`/${URL_CONSTANT.BOOK}/search`, search);
 
 export default router;
