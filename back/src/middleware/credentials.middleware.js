@@ -1,4 +1,20 @@
+import httpStatus from 'http-status-codes';
 import bcrypt from 'bcrypt';
+
+import User from '../models/User.model';
+
+const checkIfCredentialsExist = async (req, res, next) => {
+  const { username, email } = req.body;
+  if (await User.exists({ username }))
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .json({ message: 'Username already taken' });
+  if (await User.exists({ email }))
+    return res
+      .status(httpStatus.BAD_REQUEST)
+      .json({ message: 'Email already used' });
+  next();
+};
 
 const encryptPassword = async (req, res, next) => {
   const { password } = req.body;
@@ -6,4 +22,4 @@ const encryptPassword = async (req, res, next) => {
   next();
 };
 
-export { encryptPassword };
+export { checkIfCredentialsExist, encryptPassword };

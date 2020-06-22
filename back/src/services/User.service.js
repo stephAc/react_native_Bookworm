@@ -1,13 +1,11 @@
 import User from '../models/User.model';
 import Book from '../models/Book.model';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export default class UserService {
   static async find() {
-    return await User.find({}, '-password').populate({
-      path: 'book',
-      model: 'Book',
-    });
+    return await User.find({}, '-password').populate('book');
   }
 
   static async findOneById(id) {
@@ -51,4 +49,14 @@ const generateUserToken = async (id) => {
   return jwt.sign({ id }, 'NotASecretKey');
 };
 
-export { addUser, generateUserToken };
+const findByCredentials = async ({ username, email, password }) => {
+  const user =
+    (username && (await User.findOne({ username }))) ||
+    (email && (await User.findOne({ email })));
+  if (!user) throw new Error('Invalid login credentials');
+  const doPasswordMatch = await bcrypt.compare(password, user.password);
+  if (!doPasswordMatch) throw new Error('Invalid login credentials');
+  return user;
+};
+
+export { addUser, generateUserToken, findByCredentials };
