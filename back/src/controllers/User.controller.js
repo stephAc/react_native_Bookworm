@@ -28,6 +28,7 @@ export default class UserController {
         status = httpStatus.NOT_FOUND;
         throw { message: 'No user finded with this id' };
       }
+      body = { data: user };
     } catch (err) {
       if (status === httpStatus.OK) status = httpStatus.INTERNAL_SERVER_ERROR;
       body = { message: err.message || 'Internal issue' };
