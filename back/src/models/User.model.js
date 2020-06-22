@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 export const role = {
   ADMIN: 30,
-  CLIENT: 20,
+  client: 20,
 };
 
 const UserSchema = new Schema({
@@ -34,7 +34,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: Number,
-    default: role.CLIENT,
+    default: role.client,
   },
   book: [
     {
