@@ -39,11 +39,21 @@ export default class UserController {
     let status = httpStatus.OK;
     let body = {};
     const id = request.params.id;
+    const reqData = request.body;
+    delete reqData.role;
 
     try {
-      let user = UserService.updateById(id);
+      let user = await UserService.updateById(id, reqData);
+      if (!user) {
+        status = httpStatus.NOT_FOUND;
+        throw { message: 'Update failed, check if id exist' };
+      }
+
       body = { data: user, message: 'User updated' };
-    } catch (err) {}
+    } catch (err) {
+      if (status === httpStatus.OK) status = httpStatus.INTERNAL_SERVER_ERROR;
+      body = { message: err.message || 'Internal issue' };
+    }
     response.status(status).json(body);
   }
 
@@ -53,9 +63,16 @@ export default class UserController {
     const id = request.params.id;
 
     try {
-      let user = UserService.deleteById(id);
+      let user = await UserService.deleteById(id);
+      if (!user) {
+        status = httpStatus.NOT_FOUND;
+        throw { message: 'Delete failed, check if id exist' };
+      }
       body = { message: 'User deleted' };
-    } catch (err) {}
+    } catch (err) {
+      if (status === httpStatus.OK) status = httpStatus.INTERNAL_SERVER_ERROR;
+      body = { message: err.message || 'Internal issue' };
+    }
     response.status(status).json(body);
   }
 }

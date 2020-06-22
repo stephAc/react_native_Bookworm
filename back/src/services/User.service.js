@@ -1,9 +1,13 @@
 import User from '../models/User.model';
+import Book from '../models/Book.model';
 import jwt from 'jsonwebtoken';
 
 export default class UserService {
   static async find() {
-    return await User.find({}, '-password').populate('book');
+    return await User.find({}, '-password').populate({
+      path: 'book',
+      model: 'Book',
+    });
   }
 
   static async findOneById(id) {
@@ -15,10 +19,10 @@ export default class UserService {
   }
 
   static async updateById(id, update) {
-    return await User.findByIdAndUpdate({ _id: id }, update, {
+    return await User.findByIdAndUpdate(id, update, {
       new: true,
       useFindAndModify: false,
-      upsert: true,
+      upsert: false,
     })
       .select('-password')
       .populate('book');
@@ -28,7 +32,7 @@ export default class UserService {
     return await User.findOneAndUpdate(filter, update, {
       new: true,
       useFindAndModify: false,
-      upsert: true,
+      upsert: false,
     })
       .select('-password')
       .populate('book');
