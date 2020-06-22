@@ -21,6 +21,7 @@ const BookSchema = new Schema({
   },
   google_link: {
     type: String,
+    required: true,
   },
   comment: [
     {
