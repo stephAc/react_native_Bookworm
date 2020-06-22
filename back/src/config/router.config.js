@@ -1,5 +1,8 @@
 import { Router } from 'express';
 
+import { checkIfCredentialsExist, encryptPassword } from '../middleware/credentials.middleware';
+import { registerUser, loginUser } from '../controllers/Auth.controller';
+
 const router = Router();
 const URL_CONSTANT = {
   USER: 'user',
@@ -7,8 +10,8 @@ const URL_CONSTANT = {
 };
 
 // Auth
-router.post(`/${URL_CONSTANT.USER}/register`);
-router.post(`/${URL_CONSTANT.USER}/login`);
+router.post(`/${URL_CONSTANT.USER}/register`, [checkIfCredentialsExist, encryptPassword], registerUser);
+router.post(`/${URL_CONSTANT.USER}/login`, loginUser);
 
 // User
 router.get(`/${URL_CONSTANT.USER}`);
