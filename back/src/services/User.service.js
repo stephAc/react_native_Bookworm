@@ -1,4 +1,5 @@
 import User from '../models/User.model';
+import jwt from 'jsonwebtoken';
 
 export default class UserService {
   static async find() {
@@ -37,3 +38,13 @@ export default class UserService {
     return await User.findByIdAndDelete(id);
   }
 }
+
+const addUser = async (user) => {
+  return await User.create(user);
+};
+
+const generateUserToken = async (id) => {
+  return jwt.sign({ id }, 'NotASecretKey');
+};
+
+export { addUser, generateUserToken };
