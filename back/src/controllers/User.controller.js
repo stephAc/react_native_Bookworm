@@ -40,6 +40,7 @@ export default class UserController {
     let body = {};
     const id = request.params.id;
     const reqData = request.body;
+    if (request.file) reqData.image = request.file.path;
     delete reqData.role;
 
     try {
