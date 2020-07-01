@@ -1,16 +1,19 @@
 import httpStatus from 'http-status-codes';
 
-import {
+import UserService, {
   addUser,
   generateUserToken,
   findByCredentials,
 } from '../services/User.service';
 
 const registerUser = async (req, res) => {
+  if (req.file) req.body.image = req.file.path;
+
   try {
-    const user = await addUser(req.body);
-    const token = await generateUserToken(user._id);
-    res.status(httpStatus.CREATED).json({ token });
+    let user = await addUser(req.body);
+    const session_token = await generateUserToken(user._id);
+    user = await UserService.updateById(user._id, { session_token });
+    res.status(httpStatus.CREATED).json({ session_token });
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json({ message: error.message });
   }
@@ -18,13 +21,14 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const user = await findByCredentials(req.body);
+    let user = await findByCredentials(req.body);
     if (!user)
       return res
         .status(httpStatus.NOT_FOUND)
         .json({ message: 'User not found' });
-    const token = await generateUserToken(user._id);
-    res.status(httpStatus.OK).json({ token });
+    const session_token = await generateUserToken(user._id);
+    user = await UserService.updateById(user._id, { session_token });
+    res.status(httpStatus.OK).json({ session_token });
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json({ message: error.message });
   }

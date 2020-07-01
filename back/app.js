@@ -12,14 +12,11 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: true }));
-app.use(express.static('public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
 
 Database.getConnection().then(() => {
