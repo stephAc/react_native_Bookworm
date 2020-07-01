@@ -1,27 +1,32 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createStackNavigator } from 'react-navigation-stack';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/store/store';
+
+import Splash from './views/Splash.view';
+import Login from './views/Login.view';
+
+const AppNavigator = createStackNavigator(
+  {
+    Splash: { screen: Splash, navigationOptions: { headerShown: false } },
+    Login: { screen: Login, navigationOptions: { headerShown: false } },
+  },
+  {
+    initialRouteName: 'Splash',
+  },
+);
+
+const AppContainer = createAppContainer(AppNavigator);
 
 export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <View style={styles.container}>
-          <Text>Open up App.js to start working on your app!</Text>
-        </View>
+        <AppContainer />
       </PersistGate>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'grey',
-    color: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
