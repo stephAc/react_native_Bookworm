@@ -17,7 +17,7 @@ const Splash = ({ navigation }) => {
     Animated.timing(fade, {
       toValue: 0,
       duration: 1500,
-    }).start(() => navigation.navigate('Login'));
+    }).start(() => navigation.navigate('Home'));
   };
 
   useEffect(() => {
