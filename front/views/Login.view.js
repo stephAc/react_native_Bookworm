@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
@@ -79,7 +79,7 @@ const Login = ({ navigation, user_login }) => {
   useEffect(() => {
     const { user } = navigation.state.params;
     setUser(user);
-    user !== null && user_login(data.user);
+    user !== null && user_login(user);
   }, []);
 
   return (
