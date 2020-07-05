@@ -62,6 +62,7 @@ const Login = ({ navigation, user_login }) => {
       if (switchBtn)
         await SecureStore.setItemAsync(BOOKWORM_TOKEN_KEY, data.session_token);
       user_login(data.user);
+      navigation.navigate('Home');
     } catch (err) {
       if (err.response.status === 400) {
         const { message } = err.response.data;
@@ -78,6 +79,7 @@ const Login = ({ navigation, user_login }) => {
 
   useEffect(() => {
     const { user } = navigation.state.params;
+    console.log('Login page', user);
     setUser(user);
     user !== null && user_login(user);
   }, []);
@@ -95,7 +97,10 @@ const Login = ({ navigation, user_login }) => {
       )}
       {user !== null ? (
         <View>
-          <TouchableOpacity style={styles.userLogBtn}>
+          <TouchableOpacity
+            style={styles.userLogBtn}
+            onPress={() => navigation.navigate('Home')}
+          >
             <Text style={styles.userLogBtnText}>
               Continuer en tant que {user.username}
             </Text>

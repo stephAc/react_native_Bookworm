@@ -10,7 +10,7 @@ const FormInput = ({
   keyboardType,
   name,
   placeholder,
-  autoCapitalize = '',
+  autoCapitalize = null,
   ...rest
 }) => (
   <View style={styles.inputContainer}>
