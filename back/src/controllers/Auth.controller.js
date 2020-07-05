@@ -13,7 +13,9 @@ const registerUser = async (req, res) => {
     let user = await addUser(req.body);
     const session_token = await generateUserToken(user._id);
     user = await UserService.updateById(user._id, { session_token });
-    res.status(httpStatus.CREATED).json({ session_token });
+    delete user.password;
+    delete user.session_token;
+    res.status(httpStatus.CREATED).json({ user, session_token });
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json({ message: error.message });
   }
@@ -28,7 +30,9 @@ const loginUser = async (req, res) => {
         .json({ message: 'User not found' });
     const session_token = await generateUserToken(user._id);
     user = await UserService.updateById(user._id, { session_token });
-    res.status(httpStatus.OK).json({ session_token });
+    delete user.password;
+    delete user.session_token;
+    res.status(httpStatus.OK).json({ user, session_token });
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json({ message: error.message });
   }

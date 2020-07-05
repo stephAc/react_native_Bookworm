@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import UserService from '../services/User.service';
 export default class UserController {
-  static async get(request, response) {
+  static async list(request, response) {
     let status = httpStatus.OK;
     let body = {};
 
@@ -15,6 +15,15 @@ export default class UserController {
     }
 
     response.status(status).json(body);
+  }
+
+  static async get(request, response) {
+    let status = httpStatus.OK;
+    let { user } = request;
+    delete user.password;
+    delete user.token;
+
+    response.status(status).json({ user });
   }
 
   static async getById(request, response) {
