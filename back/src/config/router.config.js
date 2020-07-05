@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   checkIfCredentialsExist,
   encryptPassword,
+  decryptToken,
 } from '../middleware/credentials.middleware';
 import multerHandle from '../middleware/multer.middleware';
 import { registerUser, loginUser } from '../controllers/Auth.controller';
@@ -24,11 +25,12 @@ router.post(
 router.post(`/${URL_CONSTANT.USER}/login`, loginUser);
 
 // User
-router.get(`/${URL_CONSTANT.USER}`, UserController.get);
-router.get(`/${URL_CONSTANT.USER}/:id`, UserController.getById);
+router.get(`/${URL_CONSTANT.USER}`, decryptToken, UserController.get);
+router.get(`/${URL_CONSTANT.USER}/list`, UserController.list);
+router.get(`/${URL_CONSTANT.USER}/:id`, decryptToken, UserController.getById);
 router.put(
   `/${URL_CONSTANT.USER}/:id`,
-  [multerHandle, checkIfCredentialsExist],
+  [multerHandle, decryptToken],
   UserController.updateById,
 );
 router.delete(`/${URL_CONSTANT.USER}/:id`, UserController.deleteById);
