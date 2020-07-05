@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     width: 264,
     height: 156,
     backgroundColor: 'transparent',
-    borderColor: 'white',
-    borderWidth: 1,
+    borderColor: 'yellow',
+    borderWidth: 4,
   }
 });
 

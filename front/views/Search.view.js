@@ -40,29 +40,41 @@ const Search = () => {
         <Icon name='search' size={24} />
       </View>
 
-      {results.length > 0 && <Text>Résultats</Text>}
-      <FlatList
-        data={results}
-        horizontal={true}
-        renderItem={({ item }) => <BookItem {...item} />}
-        keyExtractor={item => item.id}
-      />
+      {results.length > 0 &&
+        <View>
+          <Text>Résultats</Text>
+          <FlatList
+            data={results}
+            horizontal={true}
+            renderItem={({ item }) => <BookItem {...item} />}
+            keyExtractor={item => item.id}
+          />
+        </View>
+      }
 
-      {resultsByTitle.length > 0 && <Text>Résultats par titre</Text>}
-      <FlatList
-        data={resultsByTitle}
-        horizontal={true}
-        renderItem={({ item }) => <BookItem {...item} />}
-        keyExtractor={item => item.id}
-      />
+      {resultsByTitle.length > 0 &&
+        <View>
+          <Text>Résultats par titre</Text>
+          <FlatList
+            data={resultsByTitle}
+            horizontal={true}
+            renderItem={({ item }) => <BookItem {...item} />}
+            keyExtractor={item => item.id}
+          />
+        </View>
+      }
 
-      {resultsByAuthor.length > 0 && <Text>Résultats par auteur</Text>}
-      <FlatList
-        data={resultsByAuthor}
-        horizontal={true}
-        renderItem={({ item }) => <BookItem {...item} />}
-        keyExtractor={item => item.id}
-      />
+      {resultsByAuthor.length > 0 &&
+        <View>
+          <Text>Résultats par auteur</Text>
+          <FlatList
+            data={resultsByAuthor}
+            horizontal={true}
+            renderItem={({ item }) => <BookItem {...item} />}
+            keyExtractor={item => item.id}
+          />
+        </View>
+      }
     </View>
   );
 };

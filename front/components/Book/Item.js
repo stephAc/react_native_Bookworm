@@ -15,7 +15,7 @@ const BookItem = (props) => {
       }
       <View>
         <Text style={styles.text}>{book.title}</Text>
-        <Text style={styles.text}>{book.authors[0]}</Text>
+        {book.authors && <Text style={styles.text}>{book.authors[0]}</Text>}
       </View>
     </View>
   );
