@@ -35,7 +35,7 @@ export default class UserController {
       const user = await UserService.findOneById(id);
       if (!user) {
         status = httpStatus.NOT_FOUND;
-        throw { message: 'No user finded with this id' };
+        throw { message: 'No user found with this id' };
       }
       body = { data: user };
     } catch (err) {
