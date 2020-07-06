@@ -20,7 +20,10 @@ const Scanner = ({ navigation }) => {
       );
     } else {
       await GoogleService.searchByISBN(data)
-        .then(({ data }) => navigation.replace('Details', { data }));
+        .then(({ data }) => navigation.replace(
+          'Details',
+          { data, user: navigation.state.params.user }
+        ));
     }
   };
 

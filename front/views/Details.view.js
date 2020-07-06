@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 import IconButton from '../components/Button/Icon';
+import BookService from '../services/book.service';
 
 const Details = ({ navigation }) => {
   const results = navigation.state.params.data;
@@ -14,18 +15,30 @@ const Details = ({ navigation }) => {
     );
   }
 
-  const book = results.items[0];
+  const user = navigation.state.params.user;
+  const addToLibrary = async () => {
+    await BookService.addToLibrary(user.session_token, user._id, {
+      author: book.authors[0],
+      title: book.title,
+      cover: book.imageLinks.thumbnail,
+      category: book.categories[0],
+      google_link: item.selfLink
+    });
+  }
+
+  const item = results.items[0];
+  const book = item.volumeInfo;
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>{book.volumeInfo.title}</Text>
-        <Text style={styles.author}>{book.volumeInfo.authors[0]}</Text>
+        <Text style={styles.title}>{book.title}</Text>
+        <Text style={styles.author}>{book.authors[0]}</Text>
       </View>
 
       <View style={styles.body}>
-        {book.volumeInfo.imageLinks &&
+        {book.imageLinks &&
           <Image
-            source={{ uri: book.volumeInfo.imageLinks.thumbnail }}
+            source={{ uri: book.imageLinks.thumbnail }}
             style={styles.cover}
             resizeMode='contain'
           />
@@ -33,12 +46,16 @@ const Details = ({ navigation }) => {
         <View>
           <Text>no. stars</Text>
           <Text>no. reviews</Text>
-          <Text>{book.volumeInfo.pageCount} pages</Text>
-          <Text>{book.volumeInfo.publishedDate}</Text>
+          <Text>{book.pageCount} pages</Text>
+          <Text>{book.publishedDate}</Text>
         </View>
       </View>
 
-      <IconButton icon='book-plus' message="Ajouter à votre bibliothèque" />
+      <IconButton
+        icon='book-plus'
+        message="Ajouter à votre bibliothèque"
+        handlePress={addToLibrary}
+      />
 
       {/* {book.volumeInfo.description &&
         <Text>{book.volumeInfo.description}</Text>

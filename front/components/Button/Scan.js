@@ -5,13 +5,13 @@ import { Camera } from 'expo-camera';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const ScanButton = ({ navigation }) => {
+const ScanButton = ({ navigation, user }) => {
   const askPermission = async () => {
     // { "canAskAgain": true, "expires": "never", "granted": false, "status": "denied" }
     // { "canAskAgain": true, "expires": "never", "granted": true, "status": "granted" }
     const { status } = await Camera.requestPermissionsAsync();
     status === 'granted'
-      ? navigation.navigate('Scanner')
+      ? navigation.navigate('Scanner', { user })
       : Alert.alert(
         "Autorisation refusée ಥ_ಥ",
         "Vous nous avez refusé l'accès à votre appareil photo ಠಿ_ಠ\n"
@@ -19,7 +19,7 @@ const ScanButton = ({ navigation }) => {
         + "Voulez-vous nous autoriser ?",
         [
           { text: "Nop", style: "cancel" },
-          { text: "Oui", onPress: () => navigation.navigate('Scanner') }
+          { text: "Oui", onPress: () => navigation.navigate('Scanner', { user }) }
         ]
       );
   }

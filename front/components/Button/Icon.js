@@ -3,8 +3,8 @@ import { Text, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const IconButton = ({ icon, message }) => (
-    <Icon.Button name={icon} size={24} backgroundColor='#C5AE92'>
+const IconButton = ({ icon, message, handlePress }) => (
+    <Icon.Button name={icon} size={24} backgroundColor='#C5AE92' onPress={handlePress}>
         <Text style={styles.text}>
             {message}
         </Text>

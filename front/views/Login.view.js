@@ -62,7 +62,7 @@ const Login = ({ navigation, user_login }) => {
       if (switchBtn)
         await SecureStore.setItemAsync(BOOKWORM_TOKEN_KEY, data.session_token);
       user_login(data.user);
-      navigation.navigate('Home');
+      navigation.navigate('Home', { data });
     } catch (err) {
       if (err.response.status === 400) {
         const { message } = err.response.data;
@@ -99,7 +99,7 @@ const Login = ({ navigation, user_login }) => {
         <View>
           <TouchableOpacity
             style={styles.userLogBtn}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Home', { data: user })}
           >
             <Text style={styles.userLogBtnText}>
               Continuer en tant que {user.username}

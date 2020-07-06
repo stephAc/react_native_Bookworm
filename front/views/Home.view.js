@@ -32,11 +32,14 @@ const books = [
   },
 ];
 
-const Home = (props) => {
+const Home = ({ navigation }) => {
+  const user = navigation.state.params.data;
+
   return (
     <View style={styles.container}>
       <FlatList
         data={books}
+        // data={user.book}
         horizontal={false}
         numColumns={3}
         ItemSeparatorComponent={Separator}
@@ -44,7 +47,7 @@ const Home = (props) => {
         renderItem={({ item }) => <BookThumbnail {...item} />}
         keyExtractor={item => item.id}
       />
-      <ScanButton {...props} />
+      <ScanButton navigation={navigation} user={user} />
     </View>
   );
 };
