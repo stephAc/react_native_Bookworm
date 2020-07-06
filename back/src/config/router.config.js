@@ -9,6 +9,7 @@ import multerHandle from '../middleware/multer.middleware';
 import { registerUser, loginUser } from '../controllers/Auth.controller';
 import UserController from '../controllers/User.controller';
 import { search } from '../controllers/Google.controller';
+import BookController from '../controllers/Book.controller';
 
 const router = Router();
 const URL_CONSTANT = {
@@ -37,5 +38,8 @@ router.delete(`/${URL_CONSTANT.USER}/:id`, UserController.deleteById);
 
 // Book
 router.get(`/${URL_CONSTANT.BOOK}/search`, search);
+router.get(`/${URL_CONSTANT.BOOK}/list`, BookController.list);
+router.put(`/${URL_CONSTANT.BOOK}/:userId`, decryptToken, BookController.updateLibrary);
+router.put(`/${URL_CONSTANT.BOOK}/:userId/:bookId`, decryptToken, BookController.updateLibrary);
 
 export default router;
