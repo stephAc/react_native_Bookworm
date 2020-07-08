@@ -27,14 +27,13 @@ const encryptPassword = async (req, res, next) => {
 const decryptToken = async (req, res, next) => {
   try {
     const token = req.headers.authorization.replace(/Bearer /g, '');
-    console.log('token', token);
     const userID = jwt.verify(token, 'NotASecretKey');
-    console.log(userID);
     const user = await UserService.findOneById(userID.id);
     if (user.session_token !== token) {
       throw { message: 'Unauthorized: token difference' };
     }
 
+    req.token = token;
     req.user = user;
     next();
   } catch (err) {

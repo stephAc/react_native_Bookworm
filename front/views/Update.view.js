@@ -8,16 +8,13 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-root-toast';
-import * as SecureStore from 'expo-secure-store';
 import { connect } from 'react-redux';
 
 import UserService from '../services/user.service';
-import { API_MESSAGE_RESPONSE } from '../config/api.config';
 import { user_login } from '../redux/actions/user.action';
-import { BOOKWORM_TOKEN_KEY } from '../config/bookworm.config';
 import RegisterUpdateForm from '../components/Form/RegisterUpdateForm';
 
-const Register = ({ navigation, user_login }) => {
+const Update = ({ navigation, user, user_login }) => {
   const [toast, setToast] = useState({ visible: false, message: '' });
 
   const changeToast = (visible = false, message = '') => {
@@ -30,7 +27,7 @@ const Register = ({ navigation, user_login }) => {
 
   const createFormData = (values, image) => {
     let formData = new FormData();
-    values['email'] = values['email'].toLowerCase();
+    if ('email' in values) values['email'] = values['email'].toLowerCase();
     if (image) {
       formData.append('file', {
         uri: image,
@@ -44,18 +41,26 @@ const Register = ({ navigation, user_login }) => {
     return formData;
   };
 
-  const register = async (values, image) => {
+  const updateUser = async (values, image) => {
     const formData = createFormData(values, image);
+    // console.log('update');
+    // console.log('update image', image);
+
     try {
-      const { data } = await UserService.create(formData);
-      await SecureStore.setItemAsync(BOOKWORM_TOKEN_KEY, data.session_token);
+      const { data } = await UserService.update(
+        user._id,
+        user.session_token,
+        formData,
+      );
+      console.log('After update');
       user_login(data.user);
-      navigation.replace('Home', { data });
+      navigation.navigate('Profil');
     } catch (err) {
-      if (err.response.status === 400) {
-        const { message } = err.response.data;
-        if (message in API_MESSAGE_RESPONSE)
-          changeToast(true, API_MESSAGE_RESPONSE[message]);
+      console.log(err);
+      if (!err.response) {
+        const updatedUser = await UserService.get(user.session_token);
+        console.log(updatedUser.data.user);
+        navigation.navigate('Profil');
       }
     }
   };
@@ -75,15 +80,12 @@ const Register = ({ navigation, user_login }) => {
           >
             {toast.message}
           </Toast>
-          <RegisterUpdateForm submit={register} />
-          <Text style={styles.redirectionText}>
-            Déjà un compte ?{' '}
-            <Text
-              style={{ color: 'blue' }}
-              onPress={() => navigation.navigate('Login')}
-            >
-              Se connecter
-            </Text>
+          <RegisterUpdateForm submit={updateUser} />
+          <Text
+            style={styles.redirectionText}
+            onPress={() => navigation.navigate('Profil')}
+          >
+            Quitter la modification
           </Text>
         </View>
       </KeyboardAwareScrollView>
@@ -101,9 +103,12 @@ const styles = StyleSheet.create({
   redirectionText: {
     marginTop: 10,
     textAlign: 'center',
+    color: 'blue',
   },
 });
 
-const mapStateToProps = (state) => state;
+const mapStateToProps = (state) => {
+  return { user: state.user.user };
+};
 
-export default connect(mapStateToProps, { user_login })(Register);
+export default connect(mapStateToProps, { user_login })(Update);

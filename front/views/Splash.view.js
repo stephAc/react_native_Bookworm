@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { connect } from 'react-redux';
 
 import UserService from '../services/user.service';
 import Logo from '../assets/img/bookworm_logo.png';
 import { BOOKWORM_TOKEN_KEY } from '../config/bookworm.config';
+import { user_login } from '../redux/actions/user.action';
 
-const Splash = ({ navigation }) => {
+const Splash = ({ navigation, user_login }) => {
   const [fade, setFade] = useState(new Animated.Value(0));
 
   const fadeInAnimation = () => {
@@ -27,13 +29,13 @@ const Splash = ({ navigation }) => {
     setTimeout(async () => {
       try {
         const token = await SecureStore.getItemAsync(BOOKWORM_TOKEN_KEY);
-        if (!token) navigation.navigate('Login', { user: null });
-
-        const { data } = await UserService.get(token);
-        navigation.navigate('Login', { user: data.user });
+        if (token) {
+          const { data } = await UserService.get(token);
+          user_login(data.user);
+        }
+        navigation.replace('Login');
       } catch (err) {
-        if (err.response.status === 401)
-          navigation.navigate('Login', { user: null });
+        if (err.response.status === 401) navigation.replace('Login');
       }
     }, 2000);
   };
@@ -58,4 +60,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Splash;
+const mapStateToProps = (state) => state;
+
+export default connect(mapStateToProps, { user_login })(Splash);

@@ -56,9 +56,12 @@ export default class UserController {
     try {
       let user = await UserService.updateById(id, reqData);
       if (!user) {
+        console.log('no user');
         status = httpStatus.NOT_FOUND;
         throw { message: 'Update failed, check if id exist' };
       }
+
+      console.log(user);
 
       body = { data: user, message: 'User updated' };
     } catch (err) {
@@ -68,14 +71,14 @@ export default class UserController {
     response.status(status).json(body);
   }
 
-  static async deleteById(request, response) {
+  static async delete(request, response) {
     let status = httpStatus.OK;
     let body = {};
-    const id = request.params.id;
+    let { user } = request;
 
     try {
-      let user = await UserService.deleteById(id);
-      if (!user) {
+      let deleted = await UserService.deleteById(user.id);
+      if (!deleted) {
         status = httpStatus.NOT_FOUND;
         throw { message: 'Delete failed, check if id exist' };
       }
