@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 import {
   createStackNavigator,
@@ -15,6 +15,8 @@ import Home from './views/Home.view';
 import Search from './views/Search.view';
 import Scanner from './views/Scanner.view';
 import Details from './views/Details.view';
+import Profil from './views/Profil.view';
+import Update from './views/Update.view';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -24,41 +26,44 @@ const BottomNavigator = createBottomTabNavigator(
       screen: Home,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
-          <Icon
-            name='bookshelf'
-            size={36}
-            color={tintColor}
-          />
-        )
-      })
+          <Icon name="bookshelf" size={36} color={tintColor} />
+        ),
+      }),
     },
     Search: {
       screen: Search,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
-          <Icon
-            name='book-search'
-            size={36}
-            color={tintColor}
-          />
-        )
-      })
-    }
+          <Icon name="book-search" size={36} color={tintColor} />
+        ),
+      }),
+    },
+    Profil: {
+      screen: Profil,
+      navigationOptions: () => ({
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="account" size={36} color={tintColor} />
+        ),
+      }),
+    },
   },
   {
     tabBarOptions: {
       showLabel: false,
       activeTintColor: '#C5AE92',
       inactiveTintColor: 'black',
-    }
-  }
+    },
+  },
 );
 import Register from './views/Register.view';
 
 const AppNavigator = createStackNavigator(
   {
     Splash: { screen: Splash, navigationOptions: { headerShown: false } },
-    Home: { screen: BottomNavigator, navigationOptions: { headerShown: false } },
+    Home: {
+      screen: BottomNavigator,
+      navigationOptions: { headerShown: false },
+    },
     Scanner: { screen: Scanner, navigationOptions: { headerShown: false } },
     Details: { screen: Details, navigationOptions: { headerShown: false } },
     Login: {
@@ -73,6 +78,10 @@ const AppNavigator = createStackNavigator(
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       },
+    },
+    Update: {
+      screen: Update,
+      navigationOptions: { headerShown: false },
     },
   },
   {

@@ -33,4 +33,29 @@ export default class UserService {
     };
     return await axios(config);
   }
+  static async update(id, token, data) {
+    const config = {
+      method: 'put',
+      url: `${MAIN_API_URL}${USER}update/${id}`,
+      headers: {
+        Accept: 'application/json',
+        'Access-Control-Allow-Methods': 'POST, GET, PUT',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+      data,
+    };
+    return await axios(config);
+  }
+  static async delete(id, token) {
+    const config = {
+      method: 'delete',
+      url: `${MAIN_API_URL}${USER}${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    return await axios(config);
+  }
 }

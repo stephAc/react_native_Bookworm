@@ -30,16 +30,24 @@ router.get(`/${URL_CONSTANT.USER}`, decryptToken, UserController.get);
 router.get(`/${URL_CONSTANT.USER}/list`, UserController.list);
 router.get(`/${URL_CONSTANT.USER}/:id`, decryptToken, UserController.getById);
 router.put(
-  `/${URL_CONSTANT.USER}/:id`,
+  `/${URL_CONSTANT.USER}/update/:id`,
   [multerHandle, decryptToken],
   UserController.updateById,
 );
-router.delete(`/${URL_CONSTANT.USER}/:id`, UserController.deleteById);
+router.delete(`/${URL_CONSTANT.USER}/:id`, decryptToken, UserController.delete);
 
 // Book
 router.get(`/${URL_CONSTANT.BOOK}/search`, search);
 router.get(`/${URL_CONSTANT.BOOK}/list`, BookController.list);
-router.put(`/${URL_CONSTANT.BOOK}/:userId`, decryptToken, BookController.updateLibrary);
-router.put(`/${URL_CONSTANT.BOOK}/:userId/:bookId`, decryptToken, BookController.updateLibrary);
+router.put(
+  `/${URL_CONSTANT.BOOK}/:userId`,
+  decryptToken,
+  BookController.updateLibrary,
+);
+router.put(
+  `/${URL_CONSTANT.BOOK}/:userId/:bookId`,
+  decryptToken,
+  BookController.updateLibrary,
+);
 
 export default router;

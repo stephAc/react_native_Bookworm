@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
@@ -18,12 +18,12 @@ import Toast from 'react-native-root-toast';
 import { connect } from 'react-redux';
 
 import UserService from '../services/user.service';
-import FormInput from '../components/FormInput';
+import FormInput from '../components/Form/FormInput';
 import LoginLogo from '../assets/img/login_logo.png';
 import Background from '../assets/img/login_background.png';
 import { BOOKWORM_TOKEN_KEY } from '../config/bookworm.config';
 import { API_MESSAGE_RESPONSE } from '../config/api.config';
-import { user_login } from '../redux/actions/user.action';
+import { user_login, user_logout } from '../redux/actions/user.action';
 
 const initValue = {
   email: '',
@@ -42,8 +42,7 @@ const loginSchema = yup.object({
     .min(4, 'Mot de passe trop court'),
 });
 
-const Login = ({ navigation, user_login }) => {
-  const [user, setUser] = useState(null);
+const Login = ({ navigation, user, user_login, user_logout }) => {
   const [toast, setToast] = useState({ visible: false, message: '' });
   const [switchBtn, setSwitchBtn] = useState(false);
   const toggleSwitch = () => setSwitchBtn((previousState) => !previousState);
@@ -62,8 +61,9 @@ const Login = ({ navigation, user_login }) => {
       if (switchBtn)
         await SecureStore.setItemAsync(BOOKWORM_TOKEN_KEY, data.session_token);
       user_login(data.user);
-      navigation.navigate('Home', { data });
+      navigation.replace('Home', { data });
     } catch (err) {
+      console.log(err);
       if (err.response.status === 400) {
         const { message } = err.response.data;
         if (message in API_MESSAGE_RESPONSE)
@@ -73,33 +73,26 @@ const Login = ({ navigation, user_login }) => {
   };
 
   const disconnectUser = async () => {
-    setUser(null);
+    user_logout();
     await SecureStore.deleteItemAsync(BOOKWORM_TOKEN_KEY);
   };
-
-  useEffect(() => {
-    const { user } = navigation.state.params;
-    console.log('Login page', user);
-    setUser(user);
-    user !== null && user_login(user);
-  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.loginLogo}>
         <Image source={LoginLogo} style={{ width: 150, height: 150 }} />
       </View>
-      {user === null && (
+      {!user && (
         <ImageBackground
           style={[styles.fixed, { zIndex: -1 }]}
           source={Background}
         />
       )}
-      {user !== null ? (
+      {user ? (
         <View>
           <TouchableOpacity
             style={styles.userLogBtn}
-            onPress={() => navigation.navigate('Home', { data: user })}
+            onPress={() => navigation.replace('Home', { data: user })}
           >
             <Text style={styles.userLogBtnText}>
               Continuer en tant que {user.username}
@@ -242,6 +235,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => state;
+const mapStateToProps = (state) => {
+  return { user: state.user.user };
+};
 
-export default connect(mapStateToProps, { user_login })(Login);
+export default connect(mapStateToProps, { user_login, user_logout })(Login);
