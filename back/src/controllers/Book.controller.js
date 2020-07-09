@@ -26,19 +26,25 @@ export default class BookController {
     try {
       let user;
       if (!bookId) {
-        const book = await BookService.create(request.body);
+        const bookList = await BookService.find();
+        let book;
+        if (bookList.some(book => book.google_link === request.body.google_link))
+          book = await BookService.getByLink(request.body.google_link);
+        else
+          book = await BookService.create(request.body);
         user = await BookService.addToLibrary(userId, book);
         if (!user)
           response.status(httpStatus.NOT_FOUND).json({ message: 'Failed to add to library' });
+        response.status(httpStatus.OK).json(book);
       } else {
-        const book = await BookService.deleteById(bookId);
-        if (!book)
-          response.status(httpStatus.NOT_FOUND).json({ message: 'Book could not be deleted' });
+        // const book = await BookService.deleteById(bookId);
+        // if (!book)
+        //   response.status(httpStatus.NOT_FOUND).json({ message: 'Book could not be deleted' });
         user = await BookService.removeFromLibrary(userId, bookId)
         if (!user)
           response.status(httpStatus.NOT_FOUND).json({ message: 'Failed to remove from library' });
+        response.status(httpStatus.OK).json(user);
       }
-      response.status(httpStatus.OK).json(user);
     } catch (error) {
       response.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
