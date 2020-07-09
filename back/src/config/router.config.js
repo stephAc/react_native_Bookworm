@@ -56,4 +56,8 @@ router.put(
 router.post(`/${URL_CONSTANT.COMMENT}/:userId/:bookId`, decryptToken, CommentController.add);
 router.get(`/${URL_CONSTANT.COMMENT}/:bookId`, CommentController.list);
 
+//Comment
+router.post(`/${URL_CONSTANT.COMMENT}/:userId/:bookId`, decryptToken, CommentController.add);
+router.get(`/${URL_CONSTANT.COMMENT}/:bookId`, CommentController.list);
+
 export default router;
