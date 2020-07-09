@@ -50,7 +50,7 @@ const Register = ({ navigation, user_login }) => {
       const { data } = await UserService.create(formData);
       await SecureStore.setItemAsync(BOOKWORM_TOKEN_KEY, data.session_token);
       user_login(data.user);
-      navigation.replace('Home', { data });
+      navigation.replace('Home');
     } catch (err) {
       if (err.response.status === 400) {
         const { message } = err.response.data;
