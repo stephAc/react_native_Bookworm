@@ -26,7 +26,7 @@ const BottomNavigator = createBottomTabNavigator(
       screen: Home,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="bookshelf" size={36} color={tintColor} />
+          <Icon name="book-open-variant" size={36} color={tintColor} />
         ),
       }),
     },
