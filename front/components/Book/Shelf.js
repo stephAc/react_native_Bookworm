@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const Separator = () => (
+const BookShelf = () => (
   <View style={styles.shelf} />
 );
 
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Separator;
+export default BookShelf;

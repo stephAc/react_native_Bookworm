@@ -3,6 +3,13 @@ import axios from 'axios';
 import { MAIN_API_URL, BOOK } from '../config/url.config';
 
 export default class GoogleService {
+    static get = async (google_link) => {
+        return await axios({
+            method: 'GET',
+            url: google_link
+        });
+    };
+
     static search = async (text, maxResults) => {
         return await axios({
             method: 'GET',

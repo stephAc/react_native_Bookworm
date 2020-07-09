@@ -1,16 +1,31 @@
-import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 
-const BookThumbnail = ({ id, cover, author, title, category, google_link, itemAdder }) => {
+import GoogleService from '../../services/google.service';
+
+const BookThumbnail = ({ navigation, id, cover, author, title, category, google_link }) => {
+  const [book, setBook] = useState({});
+  const fetchData = async () => {
+    const { data } = await GoogleService.get(google_link);
+    setBook(data);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [google_link]);
+
   return (
-    cover
-      ? <View style={styles.coverShadow}>
-        <Image source={{ uri: cover }} style={styles.cover} resizeMode='contain' />
-      </View>
-      : <View style={[styles.cover, styles.coverShadow, styles.noCover]}>
-        <Text style={styles.text}>{author}</Text>
-        <Text style={styles.text}>{title}</Text>
-      </View>
+    <TouchableOpacity onPress={() => navigation.navigate('Details', { data: book })}>
+      {cover
+        ? <View style={styles.coverShadow}>
+          <Image source={{ uri: cover }} style={styles.cover} resizeMode='contain' />
+        </View>
+        : <View style={[styles.cover, styles.coverShadow, styles.noCover]}>
+          <Text style={styles.text}>{author}</Text>
+          <Text style={styles.text}>{title}</Text>
+        </View>
+      }
+    </TouchableOpacity>
   );
 };
 

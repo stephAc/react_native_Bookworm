@@ -1,23 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 const BookItem = (props) => {
   const book = props.volumeInfo;
-  // console.log(book)
   return (
-    <View style={styles.item}>
-      {book.imageLinks &&
-        <Image
-          source={{ uri: book.imageLinks.thumbnail }}
-          style={styles.cover}
-          resizeMode='contain'
-        />
-      }
-      <View>
-        <Text style={styles.text}>{book.title}</Text>
-        {book.authors && <Text style={styles.text}>{book.authors[0]}</Text>}
+    <TouchableOpacity onPress={() => props.navigation.navigate('Details', { data: props })}>
+      <View style={styles.item}>
+        {book.imageLinks &&
+          <Image
+            source={{ uri: book.imageLinks.thumbnail }}
+            style={styles.cover}
+            resizeMode='contain'
+          />
+        }
+        <View>
+          <Text style={styles.text}>{book.title}</Text>
+          {book.authors && <Text style={styles.text}>{book.authors[0]}</Text>}
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

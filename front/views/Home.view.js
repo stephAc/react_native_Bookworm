@@ -1,8 +1,15 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, } from 'react-native';
+import React, { useEffect, useCallback } from 'react';
+import { View, FlatList, StyleSheet, } from 'react-native';
+import { useFocusEffect } from 'react-navigation-hooks';
+
+import * as SecureStore from 'expo-secure-store';
+import { BOOKWORM_TOKEN_KEY } from '../config/bookworm.config';
+import UserService from '../services/user.service';
+import { connect } from 'react-redux';
+import { user_login } from '../redux/actions/user.action';
 
 import BookThumbnail from '../components/Book/Thumbnail';
-import Separator from '../components/Separator';
+import BookShelf from '../components/Book/Shelf';
 import ScanButton from '../components/Button/Scan';
 
 const books = [
@@ -32,22 +39,19 @@ const books = [
   },
 ];
 
-const Home = ({ navigation }) => {
-  const user = navigation.state.params.data;
-
+const Home = ({ navigation, user }) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={books}
-        // data={user.book}
+        data={user.book}
         horizontal={false}
         numColumns={3}
-        ItemSeparatorComponent={Separator}
-        ListFooterComponent={Separator}
-        renderItem={({ item }) => <BookThumbnail {...item} />}
+        ItemSeparatorComponent={BookShelf}
+        ListFooterComponent={BookShelf}
+        renderItem={({ item }) => <BookThumbnail {...item} navigation={navigation} />}
         keyExtractor={item => item.id}
       />
-      <ScanButton navigation={navigation} user={user} />
+      <ScanButton navigation={navigation} />
     </View>
   );
 };
@@ -60,4 +64,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+const mapStateToProps = (state) => state.user;
+
+export default connect(mapStateToProps, { user_login })(Home);

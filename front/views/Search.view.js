@@ -4,11 +4,11 @@ import { View, Text, TextInput, StyleSheet, FlatList, } from 'react-native';
 import GoogleService from '../services/google.service';
 
 import BookThumbnail from '../components/Book/Thumbnail';
-
-import Icon from 'react-native-vector-icons/Ionicons';
 import BookItem from '../components/Book/Item';
 
-const Search = () => {
+import Icon from 'react-native-vector-icons/Ionicons';
+
+const Search = ({ navigation }) => {
   const [results, setResults] = useState([]);
   const [resultsByTitle, setResultsByTitle] = useState([]);
   const [resultsByAuthor, setResultsByAuthor] = useState([]);
@@ -40,37 +40,37 @@ const Search = () => {
         <Icon name='search' size={24} />
       </View>
 
-      {results.length > 0 &&
+      {results && results.length > 0 &&
         <View>
           <Text>Résultats</Text>
           <FlatList
             data={results}
             horizontal={true}
-            renderItem={({ item }) => <BookItem {...item} />}
+            renderItem={({ item }) => <BookItem {...item} navigation={navigation} />}
             keyExtractor={item => item.id}
           />
         </View>
       }
 
-      {resultsByTitle.length > 0 &&
+      {resultsByTitle && resultsByTitle.length > 0 &&
         <View>
           <Text>Résultats par titre</Text>
           <FlatList
             data={resultsByTitle}
             horizontal={true}
-            renderItem={({ item }) => <BookItem {...item} />}
+            renderItem={({ item }) => <BookItem {...item} navigation={navigation} />}
             keyExtractor={item => item.id}
           />
         </View>
       }
 
-      {resultsByAuthor.length > 0 &&
+      {resultsByAuthor && resultsByAuthor.length > 0 &&
         <View>
           <Text>Résultats par auteur</Text>
           <FlatList
             data={resultsByAuthor}
             horizontal={true}
-            renderItem={({ item }) => <BookItem {...item} />}
+            renderItem={({ item }) => <BookItem {...item} navigation={navigation} />}
             keyExtractor={item => item.id}
           />
         </View>

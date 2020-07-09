@@ -27,7 +27,7 @@ const ScanButton = ({ navigation, user }) => {
   return (
     <TouchableWithoutFeedback onPress={askPermission}>
       <View style={styles.floatingButton}>
-        <Icon name={'qrcode-scan'} size={24} color={'#FFF'} />
+        <Icon name='qrcode-scan' size={24} color='#FFF' />
       </View>
     </TouchableWithoutFeedback>
   );

@@ -9,7 +9,7 @@ export default class UserService {
   }
 
   static async findOneById(id) {
-    return await User.findById(id, '-password');
+    return await User.findById(id, '-password').populate('book');
   }
 
   static async findOneByEmail(email) {

@@ -1,10 +1,16 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 
-import IconButton from '../components/Button/Icon';
+import { connect } from 'react-redux';
+import { user_add_library, user_remove_library } from '../redux/actions/user.action';
+
 import BookService from '../services/book.service';
 
-const Details = ({ navigation }) => {
+import ListRating from '../components/Rating/List';
+
+import IconButton from '../components/Button/Icon';
+
+const Details = ({ navigation, user, user_add_library, user_remove_library }) => {
   const results = navigation.state.params.data;
   if (results.totalItems === 0) {
     return (
@@ -15,30 +21,54 @@ const Details = ({ navigation }) => {
     );
   }
 
-  const user = navigation.state.params.user;
-  const addToLibrary = async () => {
-    await BookService.addToLibrary(user.session_token, user._id, {
-      author: book.authors[0],
-      title: book.title,
-      cover: book.imageLinks.thumbnail,
-      category: book.categories[0],
-      google_link: item.selfLink
-    });
-  }
+  const [hasBook, setHasBook] = useState(false);
+  const checkOwned = () => {
+    if (item) setHasBook(user.book.some(b =>
+      b.google_link === item.selfLink
+    ));
+    else setHasBook(user.book.some(b =>
+      b.google_link === results.selfLink
+    ));
+  };
 
-  const item = results.items[0];
-  const book = item.volumeInfo;
+  useEffect(() => {
+    checkOwned();
+  }, []);
+
+  const manageLibrary = async () => {
+    if (!hasBook) {
+      const { data } = await BookService.addToLibrary(user.session_token, user._id, {
+        author: bookDetails.authors[0],
+        title: bookDetails.title,
+        cover: bookDetails.imageLinks.thumbnail,
+        category: bookDetails.categories[0],
+        google_link: item ? item.selfLink : results.selfLink
+      });
+      await user_add_library(data);
+      setHasBook(true);
+    } else {
+      await BookService.removeFromLibrary(user.session_token, user._id, bookThumbnail[0]._id);
+      await user_remove_library(bookThumbnail[0]._id);
+      setHasBook(false);
+    }
+  };
+
+  const item = results.items ? results.items[0] : null;
+  const bookDetails = item ? item.volumeInfo : results.volumeInfo;
+  const bookThumbnail = item
+    ? user.book.filter(b => b.google_link === item.selfLink)
+    : user.book.filter(b => b.google_link === results.selfLink);
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <View>
-        <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.author}>{book.authors[0]}</Text>
+        <Text style={styles.title}>{bookDetails.title}</Text>
+        <Text style={styles.author}>{bookDetails.authors[0]}</Text>
       </View>
 
       <View style={styles.body}>
-        {book.imageLinks &&
+        {bookDetails.imageLinks &&
           <Image
-            source={{ uri: book.imageLinks.thumbnail }}
+            source={{ uri: bookDetails.imageLinks.thumbnail }}
             style={styles.cover}
             resizeMode='contain'
           />
@@ -46,21 +76,33 @@ const Details = ({ navigation }) => {
         <View>
           <Text>no. stars</Text>
           <Text>no. reviews</Text>
-          <Text>{book.pageCount} pages</Text>
-          <Text>{book.publishedDate}</Text>
+          <Text>{bookDetails.pageCount} pages</Text>
+          <Text>{bookDetails.publishedDate}</Text>
         </View>
       </View>
 
       <IconButton
-        icon='book-plus'
-        message="Ajouter à votre bibliothèque"
-        handlePress={addToLibrary}
+        icon={!hasBook ? 'book-plus' : 'book-minus'}
+        message={!hasBook ? "Ajouter à votre bibliothèque" : "Retirer de votre bibliothèque"}
+        handlePress={manageLibrary}
       />
 
-      {/* {book.volumeInfo.description &&
-        <Text>{book.volumeInfo.description}</Text>
-      } */}
-    </View>
+      {bookDetails.description &&
+        <Text>{bookDetails.description}</Text>
+      }
+
+      <View style={{
+        borderBottomColor: 'black',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        marginTop: 12,
+        marginBottom: 8,
+      }} />
+
+      <ListRating
+        userId={user._id}
+        bookId={bookThumbnail.length > 0 ? bookThumbnail[0]._id : null}
+      />
+    </ScrollView>
   );
 };
 
@@ -92,4 +134,6 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Details;
+const mapStateToProps = (state) => state.user;
+
+export default connect(mapStateToProps, { user_add_library, user_remove_library })(Details);
